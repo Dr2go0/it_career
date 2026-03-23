@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using it_career.data.models;
 using it_career.data;
+using it_career.infrastructure.Repository;
+using it_career.infrastructure.Interface;
 namespace it_career
 {
     public class Program
@@ -18,6 +20,8 @@ namespace it_career
 
             builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddScoped<IRepository, Repository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

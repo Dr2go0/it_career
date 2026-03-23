@@ -1,4 +1,5 @@
 ﻿using it_career.data.models;
+using it_career.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,7 @@ namespace it_career.data
         }
 
         DbSet<AppUser> AppUsers { get; set; }  
-
-    }
+        DbSet<Film> Film {  get; set; }
+        DbSet<Kino> Kino { get; set; }
+        }
 }

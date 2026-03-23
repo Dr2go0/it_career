@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\it_career.data\it_career.data.csproj" />
+    <ProjectReference Include="..\it_career.infrastructure\it_career.infrastructure.csproj" />
+    <ProjectReference Include="..\it_career.models\it_career.models.csproj" />
   </ItemGroup>
 
 </Project>
