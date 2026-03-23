@@ -1,6 +1,6 @@
 ﻿namespace it_career.Models
 {
-    public class Kino
+    public class KinoDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

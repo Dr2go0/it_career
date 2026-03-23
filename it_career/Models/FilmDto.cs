@@ -1,6 +1,6 @@
 ﻿namespace it_career.Models
 {
-    public class Film
+    public class FilmDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
