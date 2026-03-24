@@ -12,8 +12,8 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260324063944_InitialStructure")]
-    partial class InitialStructure
+    [Migration("20260324070118_AddedSbStructure")]
+    partial class AddedSbStructure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,11 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace it_career.data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialStructure : Migration
+    public partial class AddedSbStructure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // ── AspNetUserTokens ──────────────────────────────────────────
+            migrationBuilder.Sql("ALTER TABLE [AspNetUserTokens] DROP CONSTRAINT [PK_AspNetUserTokens]");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
                 table: "AspNetUserTokens",
@@ -28,6 +31,13 @@ namespace it_career.data.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
+
+            migrationBuilder.Sql(@"ALTER TABLE [AspNetUserTokens] 
+                ADD CONSTRAINT [PK_AspNetUserTokens] 
+                PRIMARY KEY ([UserId], [LoginProvider], [Name])");
+
+            // ── AspNetUserLogins ──────────────────────────────────────────
+            migrationBuilder.Sql("ALTER TABLE [AspNetUserLogins] DROP CONSTRAINT [PK_AspNetUserLogins]");
 
             migrationBuilder.AlterColumn<string>(
                 name: "ProviderKey",
@@ -47,6 +57,11 @@ namespace it_career.data.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
 
+            migrationBuilder.Sql(@"ALTER TABLE [AspNetUserLogins] 
+                ADD CONSTRAINT [PK_AspNetUserLogins] 
+                PRIMARY KEY ([LoginProvider], [ProviderKey])");
+
+            // ── Create Tables ─────────────────────────────────────────────
             migrationBuilder.CreateTable(
                 name: "Film",
                 columns: table => new
@@ -145,17 +160,13 @@ namespace it_career.data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "FilmSchedule");
+            migrationBuilder.DropTable(name: "FilmSchedule");
+            migrationBuilder.DropTable(name: "UserBookedFilms");
+            migrationBuilder.DropTable(name: "Kino");
+            migrationBuilder.DropTable(name: "Film");
 
-            migrationBuilder.DropTable(
-                name: "UserBookedFilms");
-
-            migrationBuilder.DropTable(
-                name: "Kino");
-
-            migrationBuilder.DropTable(
-                name: "Film");
+            // ── AspNetUserTokens ──────────────────────────────────────────
+            migrationBuilder.Sql("ALTER TABLE [AspNetUserTokens] DROP CONSTRAINT [PK_AspNetUserTokens]");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
@@ -175,6 +186,13 @@ namespace it_career.data.Migrations
                 oldType: "nvarchar(128)",
                 oldMaxLength: 128);
 
+            migrationBuilder.Sql(@"ALTER TABLE [AspNetUserTokens] 
+                ADD CONSTRAINT [PK_AspNetUserTokens] 
+                PRIMARY KEY ([UserId], [LoginProvider], [Name])");
+
+            // ── AspNetUserLogins ──────────────────────────────────────────
+            migrationBuilder.Sql("ALTER TABLE [AspNetUserLogins] DROP CONSTRAINT [PK_AspNetUserLogins]");
+
             migrationBuilder.AlterColumn<string>(
                 name: "ProviderKey",
                 table: "AspNetUserLogins",
@@ -192,6 +210,10 @@ namespace it_career.data.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(128)",
                 oldMaxLength: 128);
+
+            migrationBuilder.Sql(@"ALTER TABLE [AspNetUserLogins] 
+                ADD CONSTRAINT [PK_AspNetUserLogins] 
+                PRIMARY KEY ([LoginProvider], [ProviderKey])");
         }
     }
 }
