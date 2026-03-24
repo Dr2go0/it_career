@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace it_career.Models
+namespace it_career.data.models
 {
     public class Film
     {
@@ -11,6 +11,8 @@ namespace it_career.Models
         public string Genre { get; set; }
         public int Duration { get; set; }
         public DateTime ReleaseDate { get; set; }
-       
+
+        public List<FilmSchedule> Schedules { get; set; } = new();
+
     }
 }

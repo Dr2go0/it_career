@@ -1,19 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace it_career.Models
+namespace it_career.data.models
 {
     public class Kino
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
         public string Location { get; set; }
         [Required]
         public int Capacity { get; set; }
-        private Dictionary<Film, DateTime> filmSchedule = new Dictionary<Film, DateTime>();
+
+        public List<FilmSchedule> FilmSchedules { get; set; } = new();
 
     }
 }
