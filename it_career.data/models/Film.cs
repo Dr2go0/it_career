@@ -7,7 +7,6 @@ namespace it_career.Models
         [Key]
         public string Id { get; set; }
         [Required]
-        [StringLength(50)]
         public string Name { get; set; }
         public string Genre { get; set; }
         public int Duration { get; set; }

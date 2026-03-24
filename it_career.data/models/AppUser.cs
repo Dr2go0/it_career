@@ -13,11 +13,5 @@ namespace it_career.data.models
     public class AppUser : IdentityUser
     {
         protected Dictionary<Kino, DateTime> BookedFilm = new Dictionary<Kino, DateTime>();
-       
-        public void BookFIlm(Kino Kino, DateTime DateTime)
-        {
-
-            BookedFilm.Add(Kino, DateTime);
-        }
     }
 }

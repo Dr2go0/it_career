@@ -12,9 +12,7 @@ namespace it_career.infrastructure.Repository
         private ApplicationDbContext _context ;
         public Repository(ApplicationDbContext contex)
         {
-            contex = _context;
+            _context = contex;
         }
-
-
     }
 }
