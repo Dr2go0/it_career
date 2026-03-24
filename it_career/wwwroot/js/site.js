@@ -8,10 +8,20 @@ function CreatKino() {
     form.ClassName = "form-group";
     form.ClassName = "horizontal";
 
+    const btnClose = document.Create.createElement("button");
+    btnClose.ClassName = "btn-close";
+    btnCLose.AddEventListener("click", function (event) {
+        form.remove();
+    });
+
     const btnCreate = document.Create.createElement("button");
     btnCreate.ClassName = "btn btn-primary";
     btnCreate.type = "submit";
     btnCreate.innerHTML = "Submit";
+    btnCreate.addEventListener("click", function (event) {
+        form.submit();
+        form.reset();
+    });
 
     const inputName = document.Create.createElement("input");
     inputName.type = "text";
