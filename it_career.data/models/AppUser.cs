@@ -1,8 +1,8 @@
 ﻿using it_career.data.models;
-using it_career.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -12,6 +12,8 @@ namespace it_career.data.models
 {
     public class AppUser : IdentityUser
     {
-        protected Dictionary<Kino, DateTime> BookedFilm = new Dictionary<Kino, DateTime>();
+       
+        public List<Film> BookedFilms { get; set; }
+
     }
 }
