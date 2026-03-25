@@ -1,12 +1,20 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<it_career.models.KinoDto>;
+
 
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
     <button class="btn btn-primary" id="AddKino" onclick="CreatKino()">Add Kino +</button>
-    <p class="container" id="kinosContainer"></p>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div id="formContainer"></div>
+    <div class="container d-flex justify-content-start" id="kinosContainer">
+        @foreach (var kino in Model)
+        {
+            <div class="container w-25 d-flex flex-column align-items-start">
+                <h3 class="align-self-center">@kino.Name</h3>
+                <p>Location: @kino.Location</p>
+                <p>Capacity: @kino.Capacity</p>
+                <button class="btn btn-secondary" onclick="KinoSchedule()">Schedule</button>
+            </div>
+        }
+    </div>
 </div>
 <script src"~\wwwroot\js\site.js"></script>
