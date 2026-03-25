@@ -51,11 +51,6 @@ function CreatKino() {
     form.appendChild(btnCreate);
 }
 
-function KinoSchedule() {
-    const form = document.createElement("form");
-    form.className = "form-group";
-    form.className = "horizontal";
-    form.className = "flex-grow-1";
-    form.method = "POST";
-    form.action = "/Home/SaveSchedule";
+function KinoSchedule(kinoName) {
+    window.location.href = '/Home/KinoSchedule?kinoName=' + kinoName;
 }

@@ -1,7 +1,5 @@
 ﻿@model List<it_career.models.KinoDto>;
 
-
-
 <div class="text-center">
     <button class="btn btn-primary" id="AddKino" onclick="CreatKino()">Add Kino +</button>
     <div id="formContainer"></div>
@@ -12,7 +10,7 @@
                 <h3 class="align-self-center">@kino.Name</h3>
                 <p>Location: @kino.Location</p>
                 <p>Capacity: @kino.Capacity</p>
-                <button class="btn btn-secondary" onclick="KinoSchedule()">Schedule</button>
+                <button class="btn btn-secondary" onclick="KinoSchedule('@kino.Name')">Schedule</button>
             </div>
         }
     </div>

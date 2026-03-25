@@ -5,6 +5,7 @@ using it_career.models;
 using it_career.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using System.Diagnostics;
 
 namespace it_career.Controllers
@@ -30,6 +31,11 @@ namespace it_career.Controllers
                 kinos.Add(kino1);
                 kinos.Add(kino2);
             return View(kinos);
+        }
+        public IActionResult KinoSchedule(string kinoName)
+        {
+            ViewBag.Name = kinoName;
+            return View();
         }
 
         public IActionResult Privacy()
