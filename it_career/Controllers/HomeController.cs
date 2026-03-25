@@ -23,6 +23,7 @@ namespace it_career.Controllers
 
         public IActionResult Privacy()
         {
+            
             return View();
         }
 

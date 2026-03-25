@@ -1,7 +1,5 @@
 ﻿using it_career.data;
 using it_career.infrastructure.Interface;
-using it_career.models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace it_career.infrastructure.Repository
 {
-    public class UserRepository : Repository, IUserRepository
+    public class FilmScheduleRepository : Repository, IFilmScheduleRepository
     {
         private ApplicationDbContext _context;
-        public UserRepository(ApplicationDbContext contex)
+        public FilmScheduleRepository(ApplicationDbContext contex) 
             : base(contex)
         {
             _context = contex;
         }
-
-       
     }
 }

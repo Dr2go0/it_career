@@ -32,6 +32,9 @@ namespace it_career
 
             builder.Services.AddScoped<IRepository, Repository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IFilmScheduleRepository, FilmScheduleRepository>();
+            builder.Services.AddScoped<IFilmRepository, FilmRepository>();
+            builder.Services.AddScoped<IKinoRepository, KinoRepository>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
