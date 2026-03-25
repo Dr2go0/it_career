@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using it_career.infrastructure.Interface;
+using it_career.models;
 using it_career.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,9 +16,9 @@ namespace it_career.Controllers
             _userRepository = userRepository;
         }
 
+        
         public IActionResult Index()
         {
-            
             return View();
         }
 
@@ -31,6 +32,12 @@ namespace it_career.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        [HttpPost]
+        public IActionResult SaveKino(KinoDto kino)
+        {
+            
+            return View();
         }
     }
 }
