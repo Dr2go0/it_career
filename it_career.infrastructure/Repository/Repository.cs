@@ -24,18 +24,18 @@ namespace it_career.infrastructure.Repository
         {
             return _context.Set<T>().ToList();
         }
-        public virtual T GetById<T>(int id) where T : class
+        public virtual T GetById<T>(string id) where T : class
         {
             return _context.Set<T>().Find(id);
         }
-        public virtual void Remove<T>(T entity) where T : class
+        public virtual void RemoveById<T>(string id) where T : class
         {
-            _context.Set<T>().Remove(entity);
-        }
-      
-        public virtual void Update<T>(T entity) where T : class
-        {
-            _context.Set<T>().Update(entity);
+            var entity = _context.Set<T>().Find(id);
+            if(entity != null)
+            {
+                _context.Set<T>().Remove(entity);
+            }
+            
         }
 
         public virtual IEnumerable<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class

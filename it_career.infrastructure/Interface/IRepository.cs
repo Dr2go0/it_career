@@ -13,11 +13,11 @@ namespace it_career.infrastructure.Interface
 
         IEnumerable<T> GetAll<T>() where T : class;
 
-        T GetById<T>(int id) where T : class;
+        T GetById<T>(string id) where T : class;
 
-        void Remove<T>(T entity) where T : class;
+        void RemoveById<T>(string id) where T : class;
 
-        void Update<T>(T entity) where T : class;
+        
 
         IEnumerable<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class;
 

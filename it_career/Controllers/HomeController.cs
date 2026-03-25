@@ -1,6 +1,10 @@
+using System.Diagnostics;
+using it_career.data.models;
+using it_career.infrastructure.Extensions;
 using Humanizer;
 using it_career.data.models;
 using it_career.infrastructure.Interface;
+using it_career.infrastructure.Mappings;
 using it_career.models;
 using it_career.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -40,7 +44,14 @@ namespace it_career.Controllers
 
         public IActionResult Privacy()
         {
-            
+            // Workflow for sending info using repository and mapping:
+            // UserDto user = new UserDto();
+            // var result = _userRepository.GetById<AppUser>(user.ToEntity().Id) ;
+
+            // Workflow for retrieving info using repository and mapping:
+            // result.ToDto();
+
+
             return View();
         }
 

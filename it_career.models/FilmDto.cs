@@ -8,6 +8,7 @@ namespace it_career.models
 {
     public class FilmDto
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Genre { get; set; }
         public int Duration { get; set; }
