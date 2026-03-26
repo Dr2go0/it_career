@@ -25,7 +25,6 @@ namespace it_career.infrastructure.Mappings
         {
             return new Kino
             {
-                Id = dto.Id,
                 Name = dto.Name,
                 Location = dto.Location,
                 Capacity = dto.Capacity

@@ -1,15 +1,16 @@
-using System.Diagnostics;
-using it_career.data.models;
-using it_career.infrastructure.Extensions;
 using Humanizer;
 using it_career.data.models;
+using it_career.data.models;
+using it_career.infrastructure.Extensions;
 using it_career.infrastructure.Interface;
 using it_career.infrastructure.Mappings;
+using it_career.infrastructure.Repository;
 using it_career.models;
 using it_career.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System.Diagnostics;
 using System.Diagnostics;
 
 namespace it_career.Controllers
@@ -19,21 +20,17 @@ namespace it_career.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IKinoRepository _kinoRepository;
-        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository)
+        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IKinoRepository kinoRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _kinoRepository = kinoRepository;
         }
 
         
         public IActionResult Index()
         {
-            //List<KinoDto> kinos = _kinoRepository.GetAll<KinoDto>().ToList();
-            List<KinoDto> kinos = new List<KinoDto>();
-                KinoDto kino1 = new KinoDto() { Name = "Kino1", Location = "Location1", Capacity = 100 };
-                KinoDto kino2 = new KinoDto() { Name = "Kino2", Location = "Location2", Capacity = 150 };
-                kinos.Add(kino1);
-                kinos.Add(kino2);
+            List<KinoDto> kinos = _kinoRepository.GetAll<Kino>().Select(x=>x.ToDto()).ToList();
             return View(kinos);
         }
         public IActionResult KinoSchedule(string kinoName)
@@ -63,14 +60,7 @@ namespace it_career.Controllers
         [HttpPost]
         public IActionResult SaveKino(KinoDto kinoDto)
         {
-            var kino = new Kino
-            {
-                Name = kinoDto.Name,
-                Location=kinoDto.Location,
-                Capacity = kinoDto.Capacity
-            };
-
-            //_kinoRepository.Kinos.Add(kino);
+            _kinoRepository.Add(kinoDto.ToEntity());
             _kinoRepository.Save();
             return RedirectToAction("Index");
         }

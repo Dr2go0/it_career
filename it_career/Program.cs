@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using it_career.data;
 using it_career.data.models;
-using it_career.data;
-using it_career.infrastructure.Repository;
 using it_career.infrastructure.Interface;
+using it_career.infrastructure.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 namespace it_career
 {
     public class Program
