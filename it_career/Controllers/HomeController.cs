@@ -1,6 +1,5 @@
 using Humanizer;
 using it_career.data.models;
-using it_career.data.models;
 using it_career.infrastructure.Extensions;
 using it_career.infrastructure.Interface;
 using it_career.infrastructure.Mappings;

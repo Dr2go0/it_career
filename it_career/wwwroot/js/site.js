@@ -36,12 +36,14 @@ function CreatKino() {
         inputLocation.name = "Location";
         inputLocation.placeholder = "Location";
         inputLocation.className = "form-control m-2";
+        inputLocation.autocomplete = "name webauthn";
 
         const inputCapacity = document.createElement("input");
         inputCapacity.type = "number";
         inputCapacity.name = "Capacity";
         inputCapacity.placeholder = "Capacity";
         inputCapacity.className = "form-control m-2";
+        inputCapacity.autocomplete = "name webauthn";
 
         document.getElementById("formContainer").appendChild(form);
 
@@ -49,6 +51,66 @@ function CreatKino() {
         form.appendChild(inputName);
         form.appendChild(inputLocation);
         form.appendChild(inputCapacity);
+        form.appendChild(btnCreate);
+    }
+}
+
+function CreatFilm() {
+    if (!document.getElementById("filmForm")) {
+        const form = document.createElement("form");
+        form.className = "form-group m-2 p-2 d-flex flex-column align-items-start";
+        form.id = "filmForm";
+        form.method = "POST";
+        form.action = "/Films/Save";
+
+        const btnClose = document.createElement("button");
+        btnClose.className = "btn btn-close m-2";
+        btnClose.addEventListener("click", function (event) {
+            form.remove();
+        });
+
+        const btnCreate = document.createElement("button");
+        btnCreate.className = "btn btn-primary m-2";
+        btnCreate.type = "submit";
+        btnCreate.innerHTML = "Submit";
+        btnCreate.addEventListener("click", function (event) {
+            form.submit();
+        });
+
+        const inputName = document.createElement("input");
+        inputName.type = "text";
+        inputName.name = "Name";
+        inputName.placeholder = "Name";
+        inputName.className = "form-control m-2";
+        inputName.autocomplete = "name webauthn";
+
+        const inputGenre = document.createElement("input");
+        inputGenre.type = "text";
+        inputGenre.name = "Genre";
+        inputGenre.placeholder = "Genre";
+        inputGenre.className = "form-control m-2";
+
+        const inputDuration = document.createElement("input");
+        inputDuration.type = "number";
+        inputDuration.name = "Duration";
+        inputDuration.placeholder = "Duration in hours";
+        inputDuration.className = "form-control m-2";
+        inputDuration.autocomplete = "name webauthn";
+
+        const inputReleased = document.createElement("input");
+        inputReleased.type = "date";
+        inputReleased.name = "ReleaseDate";
+        inputReleased.placeholder = "Released:";
+        inputReleased.className = "form-control m-2";
+        inputReleased.autocomplete = "name webauthn";
+
+        document.getElementById("formContainer").appendChild(form);
+
+        form.appendChild(btnClose);
+        form.appendChild(inputName);
+        form.appendChild(inputGenre);
+        form.appendChild(inputDuration);
+        form.appendChild(inputReleased);
         form.appendChild(btnCreate);
     }
 }

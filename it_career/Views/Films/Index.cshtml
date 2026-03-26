@@ -1,0 +1,17 @@
+﻿@model List<it_career.models.FilmDto>;
+
+<h1>Film Library</h1>
+<button class="btn btn-primary" id="AddFilm" onclick="CreatFilm()">+</button>
+<div id="formContainer"></div>
+<div class="container d-flex justify-content-start">
+    @foreach (var film in Model)
+    {
+        <div class="container w-25 d-flex flex-column align-items-start">
+            <h3 class="align-self-center"> Name: @film.Name</h3>
+            <p>Genre: @film.Genre</p>
+            <p>Duration: @film.Duration</p>
+            <p>Released: @film.ReleaseDate.ToString("yyyy-MM-dd")</p>
+        </div>
+    }
+</div>
+<script src"~\wwwroot\js\site.js"></script>
