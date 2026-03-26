@@ -115,6 +115,6 @@ function CreatFilm() {
     }
 }
 
-function KinoSchedule(kinoName) {
-    window.location.href = '/Home/KinoSchedule?kinoName=' + kinoName;
+function KinoSchedule(kinoId) {
+    window.location.href = '/Home/KinoSchedule?kinoId=' + kinoId;
 }

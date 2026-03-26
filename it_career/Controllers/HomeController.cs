@@ -19,23 +19,37 @@ namespace it_career.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IKinoRepository _kinoRepository;
-        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IKinoRepository kinoRepository)
+        private readonly IFilmScheduleRepository _filmScheduleRepository;
+        private readonly IFilmRepository _filmRepository;
+        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IKinoRepository kinoRepository, IFilmScheduleRepository filmScheduleRepository, IFilmRepository filmRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
             _kinoRepository = kinoRepository;
+            _filmScheduleRepository = filmScheduleRepository;
+            _filmRepository = filmRepository;
         }
 
-        
+
         public IActionResult Index()
         {
             List<KinoDto> kinos = _kinoRepository.GetAll<Kino>().Select(x=>x.ToDto()).ToList();
             return View(kinos);
         }
-        public IActionResult KinoSchedule(string kinoName)
+        public IActionResult KinoSchedule(Guid kinoId)
         {
-            ViewBag.Name = kinoName;
-            return View();
+            List<FilmScheduleDto> kinos = _filmScheduleRepository.GetAll<FilmSchedule>().Where(x => x.KinoId == (Guid)kinoId).Select(x => x.ToDto()).ToList();
+
+            List<FilmDto> allFilms= _filmRepository.GetAll<Film>().Select(x=>x.ToDto()).ToList();
+
+            var ViewModel = new KinoScheduleViewModel
+            {
+                FilmSchedules = kinos,
+                Films = allFilms
+            };
+
+            ViewBag.KinoName = _kinoRepository.GetById<Kino>(kinoId.ToString()).Name;
+            return View(ViewModel);
         }
 
         public IActionResult Privacy()

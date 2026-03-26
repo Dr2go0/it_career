@@ -1,1 +1,15 @@
-﻿<h1 class="text-center">Schedule</h1>
+﻿@model it_career.models.KinoScheduleViewModel
+<h1 class="text-center">@ViewBag.KinoName</h1>
+<div class="row">
+    @foreach (var filmSchedule in Model.FilmSchedules)
+    {
+        <p>
+            @Model.Films.FirstOrDefault(f => f.Id == filmSchedule.FilmId)?.Name
+        </p>
+        <p>
+            @filmSchedule.ProjectionDate.ToString("dd.MM.yyyy")
+        </p>
+        <button class="btn btn-primary" onclick="Book()">Book</button>
+        
+    }
+</div>

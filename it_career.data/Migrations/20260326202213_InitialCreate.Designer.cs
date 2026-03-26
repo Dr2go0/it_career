@@ -12,7 +12,7 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260326192239_InitialCreate")]
+    [Migration("20260326202213_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -7,7 +7,7 @@
     @foreach (var film in Model)
     {
         <div class="container w-25 d-flex flex-column align-items-start">
-            <h3 class="align-self-center"> Name: @film.Name</h3>
+            <h3 class="align-self-center">@film.Name</h3>
             <p>Genre: @film.Genre</p>
             <p>Duration: @film.Duration</p>
             <p>Released: @film.ReleaseDate.ToString("yyyy-MM-dd")</p>
