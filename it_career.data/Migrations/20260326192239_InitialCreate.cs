@@ -54,7 +54,7 @@ namespace it_career.data.Migrations
                 name: "Film",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Duration = table.Column<int>(type: "int", nullable: false),
@@ -69,7 +69,7 @@ namespace it_career.data.Migrations
                 name: "Kino",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false)
@@ -190,7 +190,7 @@ namespace it_career.data.Migrations
                 columns: table => new
                 {
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FilmId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    FilmId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,9 +213,9 @@ namespace it_career.data.Migrations
                 name: "FilmSchedule",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FilmId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    KinoId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FilmId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    KinoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

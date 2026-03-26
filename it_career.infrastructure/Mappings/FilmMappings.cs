@@ -15,7 +15,7 @@ namespace it_career.infrastructure.Extensions
         {
             return new Film
             {
-                Id = dto.Id,
+                Id = dto.Id ?? Guid.NewGuid(),
                 Name = dto.Name,
                 Genre = dto.Genre,
                 Duration = dto.Duration,
