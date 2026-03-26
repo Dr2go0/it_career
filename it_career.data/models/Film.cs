@@ -5,7 +5,7 @@ namespace it_career.data.models
     public class Film
     {
         [Key]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Genre { get; set; }

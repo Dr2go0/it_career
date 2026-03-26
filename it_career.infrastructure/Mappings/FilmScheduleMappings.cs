@@ -25,7 +25,7 @@ namespace it_career.infrastructure.Mappings
         {
             return new FilmSchedule
             {
-                Id = dto.Id,
+                Id = dto.Id ?? Guid.NewGuid(),
                 FilmId = dto.FilmId,
                 KinoId = dto.KinoId,
                 ProjectionDate = dto.ProjectionDate

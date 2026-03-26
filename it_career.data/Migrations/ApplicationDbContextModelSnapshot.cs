@@ -164,8 +164,8 @@ namespace it_career.data.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FilmId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("FilmId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("AppUserId", "FilmId");
 
@@ -241,8 +241,9 @@ namespace it_career.data.Migrations
 
             modelBuilder.Entity("it_career.data.models.Film", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Duration")
                         .HasColumnType("int");
@@ -265,16 +266,15 @@ namespace it_career.data.Migrations
 
             modelBuilder.Entity("it_career.data.models.FilmSchedule", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FilmId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("FilmId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("KinoId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("KinoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ProjectionDate")
                         .HasColumnType("datetime2");
@@ -290,8 +290,9 @@ namespace it_career.data.Migrations
 
             modelBuilder.Entity("it_career.data.models.Kino", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Capacity")
                         .HasColumnType("int");

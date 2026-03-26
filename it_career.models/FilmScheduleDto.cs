@@ -9,11 +9,11 @@ namespace it_career.models
 {
     public class FilmScheduleDto
     {
-        public string Id { get; set; }
+        public Guid? Id { get; set; }
 
-        public string FilmId { get; set; }
+        public Guid FilmId { get; set; }
         
-        public string KinoId { get; set; }
+        public Guid KinoId { get; set; }
 
         public DateTime ProjectionDate { get; set; }
     }
