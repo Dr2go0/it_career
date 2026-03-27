@@ -22,13 +22,15 @@ namespace it_career.Controllers
         private readonly IKinoRepository _kinoRepository;
         private readonly IFilmScheduleRepository _filmScheduleRepository;
         private readonly IFilmRepository _filmRepository;
-        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IKinoRepository kinoRepository, IFilmScheduleRepository filmScheduleRepository, IFilmRepository filmRepository)
+        private readonly IBookedFilmRepository _bookedFilmRepository;
+        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IKinoRepository kinoRepository, IFilmScheduleRepository filmScheduleRepository, IFilmRepository filmRepository, IBookedFilmRepository bookedFilmRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
             _kinoRepository = kinoRepository;
             _filmScheduleRepository = filmScheduleRepository;
             _filmRepository = filmRepository;
+            _bookedFilmRepository = bookedFilmRepository;
         }
 
 
@@ -58,6 +60,13 @@ namespace it_career.Controllers
             Guid.TryParse(userIdString, out Guid userId);
             var user = _userRepository.GetById<AppUser>(userId).ToDto();
 
+            var BookedFilm= new BookedFilmDto
+            {
+                FilmScheduleId = filmSchedule.Id,
+                AppUserId = user.Id
+            };
+            _bookedFilmRepository.Add(BookedFilm.ToEntity());
+            _bookedFilmRepository.Save();
             return View(user);
         }
 

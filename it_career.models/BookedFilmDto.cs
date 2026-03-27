@@ -10,6 +10,6 @@ namespace it_career.models
     {
         public Guid? Id { get; set; }
         public string AppUserId { get; set; }
-        public Guid FilmScheduleId { get; set; }
+        public Guid? FilmScheduleId { get; set; }
     }
 }
