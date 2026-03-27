@@ -24,11 +24,11 @@ namespace it_career.infrastructure.Repository
         {
             return _context.Set<T>().ToList();
         }
-        public virtual T GetById<T>(string id) where T : class
+        public virtual T GetById<T>(Guid id) where T : class
         {
             return _context.Set<T>().Find(id);
         }
-        public virtual void RemoveById<T>(string id) where T : class
+        public virtual void RemoveById<T>(Guid id) where T : class
         {
             var entity = _context.Set<T>().Find(id);
             if(entity != null)

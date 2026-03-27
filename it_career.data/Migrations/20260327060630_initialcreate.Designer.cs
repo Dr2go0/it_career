@@ -12,8 +12,8 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260326202213_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260327060630_initialcreate")]
+    partial class initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

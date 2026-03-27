@@ -38,7 +38,7 @@ namespace it_career.Controllers
         }
         public IActionResult KinoSchedule(Guid kinoId)
         {
-            List<FilmScheduleDto> kinos = _filmScheduleRepository.GetAll<FilmSchedule>().Where(x => x.KinoId == (Guid)kinoId).Select(x => x.ToDto()).ToList();
+            List<FilmScheduleDto> kinos = _filmScheduleRepository.Find<FilmSchedule>(x=>x.KinoId == kinoId).Select(x=>x.ToDto()).ToList();
 
             List<FilmDto> allFilms= _filmRepository.GetAll<Film>().Select(x=>x.ToDto()).ToList();
 
@@ -48,7 +48,7 @@ namespace it_career.Controllers
                 Films = allFilms
             };
 
-            ViewBag.KinoName = _kinoRepository.GetById<Kino>(kinoId.ToString()).Name;
+            ViewBag.KinoName = _kinoRepository.GetById<Kino>(kinoId).Name;
             return View(ViewModel);
         }
 
