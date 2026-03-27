@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using it_career.data.models;
+using it_career.infrastructure.Enumerations;
 namespace it_career.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
@@ -29,13 +30,15 @@ namespace it_career.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public List<string> Roles { get; set; }
         public RegisterModel(
             UserManager<AppUser> userManager,
             IUserStore<AppUser> userStore,
             SignInManager<AppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +46,8 @@ namespace it_career.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            Roles = _roleManager.Roles.Select(r => r.Name).ToList();
         }
 
         /// <summary>
@@ -97,6 +102,8 @@ namespace it_career.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public Role Role { get; set; } = Role.User;
         }
 
 
@@ -117,6 +124,11 @@ namespace it_career.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                if(result.Succeeded)
+                {
+                   
+                    await _userManager.AddToRoleAsync(user, Input.Role.ToString());
+                }
 
                 if (result.Succeeded)
                 {
