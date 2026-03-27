@@ -14,6 +14,7 @@ namespace it_career.infrastructure.Interface
         IEnumerable<T> GetAll<T>() where T : class;
 
         T GetById<T>(Guid id) where T : class;
+        T GetById<T>(string id) where T : class;
 
         void RemoveById<T>(Guid id) where T : class;
 

@@ -19,22 +19,17 @@ namespace it_career.data
            
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>()
-        .HasMany(u => u.BookedFilms)
-        .WithMany()
-        .UsingEntity<Dictionary<string, object>>(
-            "UserBookedFilms",                       
-            j => j.HasOne<Film>()
-                  .WithMany()
-                  .HasForeignKey("FilmId")
-                  .OnDelete(DeleteBehavior.Cascade),
-            j => j.HasOne<AppUser>()
-                  .WithMany()
-                  .HasForeignKey("AppUserId")
-                  .OnDelete(DeleteBehavior.Cascade)
-        );
+            builder.Entity<BookedFilm>()
+                .HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey(bf => bf.AppUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<BookedFilm>()
+               .HasOne<FilmSchedule>()
+               .WithMany()
+                .HasForeignKey(bf => bf.FilmScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-        
             builder.Entity<FilmSchedule>()
                 .HasOne(fs => fs.Film)
                 .WithMany(f => f.Schedules)
@@ -53,6 +48,7 @@ namespace it_career.data
         DbSet<Film> Film { get; set; }
         DbSet<Kino> Kino { get; set; }
         DbSet<FilmSchedule> FilmSchedule { get; set; }
+        DbSet<BookedFilm> BookedFilms { get; set; }
 
-    } 
+        } 
 }

@@ -1,21 +1,23 @@
 ﻿@using System.Text.Json
 @model it_career.models.KinoScheduleViewModel
 <h1 class="text-center">@Model.Kino.Name</h1>
-<button class="btn btn-primary" onclick="AddProjection('@Model.Kino.Id', FilmsRaw)">Add Projection</button>
+<button class="btn btn-primary" onclick="AddProjection('@Model.Kino.Id')">Add Projection</button>
 <div id="formContainer"></div>
-<div class="row">
+<div class="container d-flex">
     @foreach (var filmSchedule in Model.FilmSchedules)
     {
-        <p>
-            @Model.Films.FirstOrDefault(f => f.Id == filmSchedule.FilmId)?.Name
-        </p>
-        <p>
-            @filmSchedule.ProjectionDate.ToString("dd.MM.yyyy")
-        </p>      
-        <button class="btn btn-secondary" onclick="Book()">Book</button>
+        <div class="container d-flex flex-column gap-3 w-25 border rounded p-3">
+            <p>
+                @Model.Films.FirstOrDefault(f => f.Id == filmSchedule.FilmId)?.Name
+            </p>
+            <p>
+                @filmSchedule.ProjectionDate.ToString("dd.MM.yyyy")
+            </p>
+            <button class="btn btn-secondary" onclick="Book('@filmSchedule.Id')">Book</button>
+        </div>
     }
 </div>
 <script>
-    const FilmsRaw = @Html.Raw(JsonSerializer.Serialize(Model.FilmSchedules));
+    var FilmsRaw = @Html.Raw(JsonSerializer.Serialize(Model.Films));
 </script>
 <script src"~\wwwroot\js\site.js"></script>

@@ -12,8 +12,5 @@ namespace it_career.data.models
 {
     public class AppUser : IdentityUser
     {
-
-        public List<Film> BookedFilms { get; set; } = new();
-
     }
 }

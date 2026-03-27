@@ -12,8 +12,8 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260327060630_initialcreate")]
-    partial class initialcreate
+    [Migration("20260327210643_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,12 +105,10 @@ namespace it_career.data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -147,12 +145,10 @@ namespace it_career.data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -160,21 +156,6 @@ namespace it_career.data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("UserBookedFilms", b =>
-                {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("FilmId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("AppUserId", "FilmId");
-
-                    b.HasIndex("FilmId");
-
-                    b.ToTable("UserBookedFilms");
                 });
 
             modelBuilder.Entity("it_career.data.models.AppUser", b =>
@@ -240,6 +221,39 @@ namespace it_career.data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("it_career.data.models.BookedFilm", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppUserId1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("FilmScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FilmScheduleId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("AppUserId1");
+
+                    b.HasIndex("FilmScheduleId");
+
+                    b.HasIndex("FilmScheduleId1");
+
+                    b.ToTable("BookedFilms");
                 });
 
             modelBuilder.Entity("it_career.data.models.Film", b =>
@@ -364,19 +378,35 @@ namespace it_career.data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserBookedFilms", b =>
+            modelBuilder.Entity("it_career.data.models.BookedFilm", b =>
                 {
                     b.HasOne("it_career.data.models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("it_career.data.models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("it_career.data.models.Film", null)
+                    b.HasOne("it_career.data.models.FilmSchedule", null)
                         .WithMany()
-                        .HasForeignKey("FilmId")
+                        .HasForeignKey("FilmScheduleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("it_career.data.models.FilmSchedule", "FilmSchedule")
+                        .WithMany()
+                        .HasForeignKey("FilmScheduleId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("FilmSchedule");
                 });
 
             modelBuilder.Entity("it_career.data.models.FilmSchedule", b =>

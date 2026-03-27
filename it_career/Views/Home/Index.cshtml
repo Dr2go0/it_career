@@ -6,7 +6,7 @@
     <div class="container d-flex justify-content-start" id="kinosContainer">
         @foreach (var kino in Model)
         {
-            <div class="container w-25 d-flex flex-column align-items-start">
+            <div class="container d-flex flex-column gap-3 w-25 border rounded p-3">
                 <h3 class="align-self-center">@kino.Name</h3>
                 <p>Location: @kino.Location</p>
                 <p>Capacity: @kino.Capacity</p>

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using System.Diagnostics;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace it_career.Controllers
 {
@@ -50,6 +51,15 @@ namespace it_career.Controllers
             };
             return View(ViewModel);
         }
+        public IActionResult Booked(Guid filmScheduleId)
+        {
+            var filmSchedule = _filmScheduleRepository.GetById<FilmSchedule>(filmScheduleId).ToDto();
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Guid.TryParse(userIdString, out Guid userId);
+            var user = _userRepository.GetById<AppUser>(userId).ToDto();
+
+            return View(user);
+        }
 
         public IActionResult Privacy()
         {
@@ -81,7 +91,7 @@ namespace it_career.Controllers
         {
             _filmScheduleRepository.Add(filmScheduleDto.ToEntity());
             _filmScheduleRepository.Save();
-            return RedirectToAction("KinoSchedule?kinoId=" + filmScheduleDto.KinoId);
+            return RedirectToAction("KinoSchedule", new { kinoId = filmScheduleDto.KinoId });
         }
     }
 }

@@ -28,6 +28,10 @@ namespace it_career.infrastructure.Repository
         {
             return _context.Set<T>().Find(id);
         }
+        public virtual T GetById<T>(string id) where T : class
+        {
+            return _context.Set<T>().Find(id);
+        }
         public virtual void RemoveById<T>(Guid id) where T : class
         {
             var entity = _context.Set<T>().Find(id);
@@ -54,3 +58,4 @@ namespace it_career.infrastructure.Repository
         }
     }
 }
+

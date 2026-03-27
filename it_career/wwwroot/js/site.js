@@ -115,7 +115,7 @@ function CreatFilm() {
     }
 }
 
-function AddProjection(kinoId, films) {
+function AddProjection(kinoId) {
     if (!document.getElementById("ScheduleForm")) {
         const form = document.createElement("form");
         form.className = "form-group m-2 p-2 d-flex flex-column align-items-start";
@@ -137,21 +137,27 @@ function AddProjection(kinoId, films) {
             form.submit();
         });
 
+        const inputKinoId = document.createElement("input");
+        inputKinoId.type = "hidden";
+        inputKinoId.name = "KinoId";
+        inputKinoId.value = kinoId;
+
         const inputSelectFilm = document.createElement("select");
         inputSelectFilm.name = "FilmId";
         inputSelectFilm.className = "form-control m-2";
         inputSelectFilm.Id = "FilmSelect";
 
-        films.forEach(film => {
+        FilmsRaw.forEach(film => {
             const option = document.createElement("option");
-            option.value = film.Name;
+            option.value = film.Id;
             option.textContent = film.Name;
+            option.innerHTML = film.Name;
             inputSelectFilm.appendChild(option);
         });
 
         const inputDate = document.createElement("input");
         inputDate.type = "date";
-        inputDate.name = "ReleaseDate";
+        inputDate.name = "ProjectionDate";
         inputDate.placeholder = "Released:";
         inputDate.className = "form-control m-2";
         inputDate.autocomplete = "name webauthn";
@@ -162,8 +168,13 @@ function AddProjection(kinoId, films) {
         form.appendChild(inputSelectFilm);
         form.appendChild(inputDate);
         form.appendChild(btnCreate);
+        form.appendChild(inputKinoId);
     }
 }
 function KinoSchedule(kinoId) {
     window.location.href = '/Home/KinoSchedule?kinoId=' + kinoId;
+}
+function Book(filmScheduleId) {
+    const url = `/Home/Booked?filmScheduleId=${filmScheduleId}`;
+    window.location.href = url;
 }
