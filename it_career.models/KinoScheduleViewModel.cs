@@ -10,5 +10,6 @@ namespace it_career.models
     {
         public List<FilmScheduleDto> FilmSchedules { get; set; }
         public List<FilmDto> Films { get; set; }
+        public KinoDto Kino { get; set; }
     }
 }

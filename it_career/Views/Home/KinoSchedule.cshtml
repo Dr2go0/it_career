@@ -1,5 +1,8 @@
-﻿@model it_career.models.KinoScheduleViewModel
-<h1 class="text-center">@ViewBag.KinoName</h1>
+﻿@using System.Text.Json
+@model it_career.models.KinoScheduleViewModel
+<h1 class="text-center">@Model.Kino.Name</h1>
+<button class="btn btn-primary" onclick="AddProjection('@Model.Kino.Id', FilmsRaw)">Add Projection</button>
+<div id="formContainer"></div>
 <div class="row">
     @foreach (var filmSchedule in Model.FilmSchedules)
     {
@@ -8,8 +11,11 @@
         </p>
         <p>
             @filmSchedule.ProjectionDate.ToString("dd.MM.yyyy")
-        </p>
-        <button class="btn btn-primary" onclick="Book()">Book</button>
-        
+        </p>      
+        <button class="btn btn-secondary" onclick="Book()">Book</button>
     }
 </div>
+<script>
+    const FilmsRaw = @Html.Raw(JsonSerializer.Serialize(Model.FilmSchedules));
+</script>
+<script src"~\wwwroot\js\site.js"></script>

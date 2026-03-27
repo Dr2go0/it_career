@@ -38,17 +38,16 @@ namespace it_career.Controllers
         }
         public IActionResult KinoSchedule(Guid kinoId)
         {
-            List<FilmScheduleDto> kinos = _filmScheduleRepository.Find<FilmSchedule>(x=>x.KinoId == kinoId).Select(x=>x.ToDto()).ToList();
+            List<FilmScheduleDto> Schedules = _filmScheduleRepository.Find<FilmSchedule>(x=>x.KinoId == kinoId).Select(x=>x.ToDto()).ToList();
 
             List<FilmDto> allFilms= _filmRepository.GetAll<Film>().Select(x=>x.ToDto()).ToList();
 
             var ViewModel = new KinoScheduleViewModel
             {
-                FilmSchedules = kinos,
-                Films = allFilms
+                FilmSchedules = Schedules,
+                Films = allFilms,
+                Kino = _kinoRepository.GetById<Kino>(kinoId).ToDto()
             };
-
-            ViewBag.KinoName = _kinoRepository.GetById<Kino>(kinoId).Name;
             return View(ViewModel);
         }
 
@@ -76,6 +75,13 @@ namespace it_career.Controllers
             _kinoRepository.Add(kinoDto.ToEntity());
             _kinoRepository.Save();
             return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult SaveSchedule(FilmScheduleDto filmScheduleDto)
+        {
+            _filmScheduleRepository.Add(filmScheduleDto.ToEntity());
+            _filmScheduleRepository.Save();
+            return RedirectToAction("KinoSchedule?kinoId=" + filmScheduleDto.KinoId);
         }
     }
 }

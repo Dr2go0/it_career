@@ -115,6 +115,55 @@ function CreatFilm() {
     }
 }
 
+function AddProjection(kinoId, films) {
+    if (!document.getElementById("ScheduleForm")) {
+        const form = document.createElement("form");
+        form.className = "form-group m-2 p-2 d-flex flex-column align-items-start";
+        form.id = "ScheduleForm";
+        form.method = "POST";
+        form.action = "/Home/SaveSchedule";
+
+        const btnClose = document.createElement("button");
+        btnClose.className = "btn btn-close m-2";
+        btnClose.addEventListener("click", function (event) {
+            form.remove();
+        });
+
+        const btnCreate = document.createElement("button");
+        btnCreate.className = "btn btn-primary m-2";
+        btnCreate.type = "submit";
+        btnCreate.innerHTML = "Submit";
+        btnCreate.addEventListener("click", function (event) {
+            form.submit();
+        });
+
+        const inputSelectFilm = document.createElement("select");
+        inputSelectFilm.name = "FilmId";
+        inputSelectFilm.className = "form-control m-2";
+        inputSelectFilm.Id = "FilmSelect";
+
+        films.forEach(film => {
+            const option = document.createElement("option");
+            option.value = film.Name;
+            option.textContent = film.Name;
+            inputSelectFilm.appendChild(option);
+        });
+
+        const inputDate = document.createElement("input");
+        inputDate.type = "date";
+        inputDate.name = "ReleaseDate";
+        inputDate.placeholder = "Released:";
+        inputDate.className = "form-control m-2";
+        inputDate.autocomplete = "name webauthn";
+
+        document.getElementById("formContainer").appendChild(form);
+
+        form.appendChild(btnClose);
+        form.appendChild(inputSelectFilm);
+        form.appendChild(inputDate);
+        form.appendChild(btnCreate);
+    }
+}
 function KinoSchedule(kinoId) {
     window.location.href = '/Home/KinoSchedule?kinoId=' + kinoId;
 }
