@@ -1,5 +1,6 @@
 ﻿@page
 @model RegisterModel
+@using it_career.infrastructure.Enumerations
 @{
     ViewData["Title"] = "Register";
 }
@@ -27,6 +28,20 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            @if( User.IsInRole("Admin"))
+            {
+                <div class="form-floating mb-3">
+                    <select asp-for="Input.Role" class="form-control" placeholder="Role">
+                            @foreach(var el in Model.Roles) 
+                                {
+                            <option value="@el.ToString()">@el</option>
+                                }
+                            </select>
+                    <label asp-for="Input.Role">Role</label>
+                    <span asp-validation-for="Input.Role" class="text-danger"></span>
+                </div>
+            }
+            
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>

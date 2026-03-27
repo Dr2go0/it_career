@@ -1,7 +1,7 @@
 ﻿@model List<it_career.models.KinoDto>;
 
 <div class="text-center">
-    <button class="btn btn-primary" id="AddKino" onclick="CreatKino()">Add Kino +</button>
+    @if(User.IsInRole("Manager")){<button class="btn btn-primary" id="AddKino" onclick="CreatKino()">Add Kino +</button>}
     <div id="formContainer"></div>
     <div class="container d-flex justify-content-start" id="kinosContainer">
         @foreach (var kino in Model)
