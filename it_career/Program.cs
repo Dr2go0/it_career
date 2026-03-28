@@ -40,6 +40,7 @@ namespace it_career
             builder.Services.AddScoped<IFilmRepository, FilmRepository>();
             builder.Services.AddScoped<IKinoRepository, KinoRepository>();
             builder.Services.AddScoped<SeedData>();
+            builder.Services.AddScoped<IBookedFilmRepository, BookedFilmRepository>();
             builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, DummyEmailSender>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();

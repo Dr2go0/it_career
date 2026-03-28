@@ -12,5 +12,6 @@ namespace it_career.data.models
 {
     public class AppUser : IdentityUser
     {
+        public ICollection<BookedFilm> BookedFilms { get; set; }
     }
 }

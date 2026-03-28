@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using it_career.data;
 
@@ -11,9 +12,11 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328083902_FixUserRelation")]
+    partial class FixUserRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,14 +233,25 @@ namespace it_career.data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AppUserId1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<Guid?>("FilmScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FilmScheduleId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("AppUserId1");
+
                     b.HasIndex("FilmScheduleId");
+
+                    b.HasIndex("FilmScheduleId1");
 
                     b.ToTable("BookedFilms");
                 });
@@ -372,10 +386,26 @@ namespace it_career.data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("it_career.data.models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("it_career.data.models.FilmSchedule", null)
                         .WithMany()
                         .HasForeignKey("FilmScheduleId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("it_career.data.models.FilmSchedule", "FilmSchedule")
+                        .WithMany()
+                        .HasForeignKey("FilmScheduleId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("FilmSchedule");
                 });
 
             modelBuilder.Entity("it_career.data.models.FilmSchedule", b =>

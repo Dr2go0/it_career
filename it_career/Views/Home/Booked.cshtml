@@ -1,2 +1,11 @@
-﻿@model it_career.models.UserDto
-<h3>@Model.Id</h3>
+﻿@model List<it_career.models.BookedFilmsViewModel>;
+<h3>@ViewBag.UserEmail</h3>
+<div class="container d-flex justify-content-start" id="bookedFilms">
+    @foreach (var bookedFilmsViewModel in Model)
+    {
+        <div class="container d-flex flex-column gap-3 w-25 border rounded p-3">
+            <h3 class="align-self-center">@bookedFilmsViewModel.FilmName</h3>
+            <p>@bookedFilmsViewModel.ProjectionDate.ToString("dd.MM.yyyy")</p>
+        </div>
+    }
+</div>

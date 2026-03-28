@@ -21,7 +21,7 @@ namespace it_career.data
 
             builder.Entity<BookedFilm>()
                 .HasOne<AppUser>()
-                .WithMany()
+                .WithMany(u => u.BookedFilms)
                 .HasForeignKey(bf => bf.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);
             builder.Entity<BookedFilm>()

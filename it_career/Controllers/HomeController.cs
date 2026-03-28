@@ -53,21 +53,39 @@ namespace it_career.Controllers
             };
             return View(ViewModel);
         }
-        public IActionResult Booked(Guid filmScheduleId)
+        public IActionResult Booked(Guid filmScheduleId=default)
         {
-            var filmSchedule = _filmScheduleRepository.GetById<FilmSchedule>(filmScheduleId).ToDto();
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Guid.TryParse(userIdString, out Guid userId);
-            var user = _userRepository.GetById<AppUser>(userId).ToDto();
 
-            var BookedFilm= new BookedFilmDto
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _userRepository.GetById<AppUser>(userIdString).ToDto();
+            if (filmScheduleId != Guid.Empty)
             {
-                FilmScheduleId = filmSchedule.Id,
-                AppUserId = user.Id
-            };
-            _bookedFilmRepository.Add(BookedFilm.ToEntity());
-            _bookedFilmRepository.Save();
-            return View(user);
+                var filmSchedule = _filmScheduleRepository.GetById<FilmSchedule>(filmScheduleId).ToDto();
+                var BookedFilm = new BookedFilmDto
+                {
+                    FilmScheduleId = filmSchedule.Id,
+                    AppUserId = user.Id
+                };
+                _bookedFilmRepository.Add(BookedFilm.ToEntity());
+                _bookedFilmRepository.Save();
+            }
+            var UsersBookedFilms = _bookedFilmRepository.GetAll<BookedFilm>().Where(x => x.AppUserId == userIdString).Select(x=>x.ToDto()).ToList();
+            List<BookedFilmsViewModel> BookedFilmsViewModel = new List<BookedFilmsViewModel>();
+            foreach (var item in UsersBookedFilms)
+            {
+                BookedFilmsViewModel bookedFilm = new BookedFilmsViewModel();
+                var userFilmSchedule = _filmScheduleRepository.GetById<FilmSchedule>((Guid)item.FilmScheduleId);
+                bookedFilm.FilmName = _filmScheduleRepository.GetById<Film>(userFilmSchedule.FilmId).Name;
+                bookedFilm.ProjectionDate = userFilmSchedule.ProjectionDate;
+                BookedFilmsViewModel.Add(bookedFilm);
+
+            }
+            ViewBag.UserEmail = user.Email;
+            return View(BookedFilmsViewModel);
+        }
+        public IActionResult SaveBooked()
+        {
+            return RedirectToAction("Booked");
         }
 
         public IActionResult Privacy()
