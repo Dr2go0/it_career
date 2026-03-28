@@ -12,8 +12,8 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260328115024_init")]
-    partial class init
+    [Migration("20260328195122_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -387,7 +387,7 @@ namespace it_career.data.Migrations
                     b.HasOne("it_career.data.models.FilmSchedule", "FilmSchedule")
                         .WithMany()
                         .HasForeignKey("FilmScheduleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("it_career.data.models.AppUser", "User")
                         .WithMany()

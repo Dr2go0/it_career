@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,9 +34,11 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Films" asp-action="Index">Film Library</a>
                         </li>
+                        @if (User.FindFirstValue(ClaimTypes.NameIdentifier)!=null){
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Booked">My Bookings</a>
                         </li>
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
