@@ -1,75 +1,72 @@
 ﻿using it_career.data.models;
 using it_career.infrastructure.Extensions;
 using it_career.infrastructure.Interface;
-using it_career.infrastructure.Mappings;
 using it_career.infrastructure.Repository;
 using it_career.models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace it_career.Controllers
+public class FilmsController : Controller
 {
-    public class FilmsController : Controller
+    private readonly ILogger<FilmsController> _logger;
+    private readonly IFilmRepository _filmsRepository;
+    private readonly IFilmScheduleRepository _filmScheduleRepository;
+
+    public FilmsController(ILogger<FilmsController> logger, IFilmRepository filmsRepository, IFilmScheduleRepository filmScheduleRepository)
     {
-        private readonly ILogger<FilmsController> _logger;
-        private readonly IFilmRepository  _filmsRepository;
+        _logger = logger;
+        _filmsRepository = filmsRepository;
+        _filmScheduleRepository = filmScheduleRepository;
+    }
 
-        public FilmsController(ILogger<FilmsController> logger, IFilmRepository filmsRepository)
-        {
-            _logger = logger;
-            _filmsRepository = filmsRepository;
-        }
+    public ActionResult Index()
+    {
+        List<FilmDto> films = _filmsRepository.GetAll<Film>().Select(x => x.ToDto()).ToList();
+        return View(films);
+    }
 
-        public ActionResult Index()
-        {
-            List<FilmDto> films = _filmsRepository.GetAll<Film>().Select(x=>x.ToDto()).ToList();
-            return View(films);
-        }
+    [HttpPost]
+    public ActionResult Save(FilmDto filmDto)
+    {
+        _filmsRepository.Add(filmDto.ToEntity());
+        _filmsRepository.Save();
+        return RedirectToAction("Index");
+    }
 
-        [HttpPost]
-        public ActionResult Save(FilmDto filmDto)
-        {
-            _filmsRepository.Add(filmDto.ToEntity());
-            _filmsRepository.Save();
-            return RedirectToAction("Index");
-        }
+    [HttpPost]
+    public ActionResult Edit(FilmDto filmDto)
+    {
+        var existing = _filmsRepository.GetById<Film>(filmDto.ToEntity().Id);
+        if (existing == null) return NotFound();
 
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        existing.Name = filmDto.Name;
+        existing.Genre = filmDto.Genre;
+        existing.Duration = filmDto.Duration;
+        existing.ReleaseDate = filmDto.ReleaseDate;
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
+        _filmsRepository.Save();
+        return RedirectToAction("Index");
+    }
 
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+    
+[HttpPost]
+    public ActionResult Delete(Guid id)
+    {
+        var schedules = _filmScheduleRepository
+            .Find<FilmSchedule>(x => x.FilmId == id)
+            .ToList();
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        foreach (var schedule in schedules)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _filmScheduleRepository.Delete(schedule); // cascade removes bookings
         }
+        _filmScheduleRepository.Save();
+
+        var film = _filmsRepository.GetById<Film>(id);
+        if (film == null) return NotFound();
+
+        _filmsRepository.Delete(film);
+        _filmsRepository.Save();
+        return RedirectToAction("Index");
     }
 }

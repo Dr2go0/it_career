@@ -1,17 +1,133 @@
-﻿@model List<it_career.models.FilmDto>;
+﻿@model List<it_career.models.FilmDto>
 
-<h1>Film Library</h1>
-<button class="btn btn-primary" id="AddFilm" onclick="CreatFilm()">+</button>
-<div id="formContainer"></div>
-<div class="container d-flex justify-content-start">
-    @foreach (var film in Model)
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="mb-0">Film Library</h2>
+        <p class="text-muted mb-0">All available films</p>
+    </div>
+    @if (User.IsInRole("Manager"))
     {
-        <div class="container d-flex flex-column gap-3 w-25 border rounded p-3">
-            <h3 class="align-self-center">@film.Name</h3>
-            <p>Genre: @film.Genre</p>
-            <p>Duration: @film.Duration</p>
-            <p>Released: @film.ReleaseDate.ToString("yyyy-MM-dd")</p>
-        </div>
+        <button class="btn btn-primary" onclick="CreatFilm()">+ Add Film</button>
     }
 </div>
-<script src"~\wwwroot\js\site.js"></script>
+
+<div id="formContainer" class="mb-4"></div>
+
+@if (!Model.Any())
+{
+    <div class="text-center text-muted py-5">
+        <p class="fs-5">No films in the library yet.</p>
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var film in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@film.Name</h5>
+                        <ul class="list-unstyled text-muted">
+                            <li>🎭 Genre: @film.Genre</li>
+                            <li>⏱ Duration: @film.Duration hours</li>
+                            <li>📅 Released: @film.ReleaseDate.ToString("dd MMM yyyy")</li>
+                        </ul>
+                    </div>
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <div class="card-footer bg-transparent d-flex gap-2">
+                            <!-- Edit button triggers modal populated by JS -->
+                            <button class="btn btn-outline-secondary btn-sm flex-grow-1"
+                                    onclick="openEditFilmModal('@film.Id','@film.Name','@film.Genre','@film.Duration','@film.ReleaseDate.ToString("yyyy-MM-dd")')">
+                                ✏️ Edit
+                            </button>
+                            <!-- Delete button triggers confirm modal -->
+                            <button class="btn btn-outline-danger btn-sm flex-grow-1"
+                                    onclick="openDeleteFilmModal('@film.Id','@film.Name')">
+                                🗑 Delete
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Edit Film Modal -->
+<div class="modal fade" id="editFilmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Films" asp-action="Edit" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Film</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="editFilmId" />
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="Name" id="editFilmName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Genre</label>
+                        <input type="text" class="form-control" name="Genre" id="editFilmGenre" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Duration (min)</label>
+                        <input type="number" class="form-control" name="Duration" id="editFilmDuration" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Release Date</label>
+                        <input type="date" class="form-control" name="ReleaseDate" id="editFilmReleaseDate" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Film Modal -->
+<div class="modal fade" id="deleteFilmModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form asp-controller="Films" asp-action="Delete" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Film</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="deleteFilmId" />
+                    <p>Delete <strong id="deleteFilmName"></strong>? This cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openEditFilmModal(id, name, genre, duration, releaseDate) {
+            document.getElementById('editFilmId').value = id;
+            document.getElementById('editFilmName').value = name;
+            document.getElementById('editFilmGenre').value = genre;
+            document.getElementById('editFilmDuration').value = duration;
+            document.getElementById('editFilmReleaseDate').value = releaseDate;
+            new bootstrap.Modal(document.getElementById('editFilmModal')).show();
+        }
+        function openDeleteFilmModal(id, name) {
+            document.getElementById('deleteFilmId').value = id;
+            document.getElementById('deleteFilmName').textContent = name;
+            new bootstrap.Modal(document.getElementById('deleteFilmModal')).show();
+        }
+    </script>
+}

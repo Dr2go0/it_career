@@ -39,10 +39,20 @@ namespace it_career.data.Seeder
                     Email = "admin@gmail.com"
 
                 };
+                var manager = new AppUser
+                {
+                    UserName = "manager",
+                    Email = "manager@gmail.com"
+                };
                 var res = await _userManager.CreateAsync(admin, "Admin!123");
+                var res2 = await _userManager.CreateAsync(manager, "Manager!123");
                 if (res.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(admin, "Admin");
+                }
+                if(res2.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(manager, "Manager");
                 }
             }
 

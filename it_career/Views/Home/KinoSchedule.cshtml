@@ -1,23 +1,135 @@
 ﻿@using System.Text.Json
 @model it_career.models.KinoScheduleViewModel
-<h1 class="text-center">@Model.Kino.Name</h1>
-<button class="btn btn-primary" onclick="AddProjection('@Model.Kino.Id')">Add Projection</button>
-<div id="formContainer"></div>
-<div class="container d-flex">
-    @foreach (var filmSchedule in Model.FilmSchedules)
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="mb-0">@Model.Kino.Name</h2>
+        <p class="text-muted mb-0">Upcoming projections</p>
+    </div>
+    @if(User.IsInRole("Manager") && Model.UserId == Model.ManagerId)
     {
-        <div class="container d-flex flex-column gap-3 w-25 border rounded p-3">
-            <p>
-                @Model.Films.FirstOrDefault(f => f.Id == filmSchedule.FilmId)?.Name
-            </p>
-            <p>
-                @filmSchedule.ProjectionDate.ToString("dd.MM.yyyy")
-            </p>
-            <button class="btn btn-secondary" onclick="Book('@filmSchedule.Id')">Book</button>
-        </div>
+       <button class="btn btn-primary" onclick="AddProjection('@Model.Kino.Id')">+ Add Projection</button>
     }
+    
 </div>
+
+<div id="formContainer" class="mb-4"></div>
+
+@if (!Model.FilmSchedules.Any())
+{
+    <div class="text-center text-muted py-5">
+        <p class="fs-5">No projections scheduled yet.</p>
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var schedule in Model.FilmSchedules)
+        {
+            var filmName = Model.Films.FirstOrDefault(f => f.Id == schedule.FilmId)?.Name ?? "Unknown Film";
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@filmName</h5>
+                        <p class="text-muted mb-0">🗓 @schedule.ProjectionDate.ToString("dd MMM yyyy, HH:mm")</p>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <button class="btn btn-outline-success btn-sm flex-grow-1"
+                                onclick="Book('@schedule.Id')">
+                            Book
+                        </button>
+                        @if (User.IsInRole("Manager") && Model.UserId == Model.ManagerId)
+                        {
+                            <button class="btn btn-outline-secondary btn-sm"
+                                    onclick="openEditScheduleModal('@schedule.Id','@schedule.FilmId','@schedule.ProjectionDate.ToString("yyyy-MM-ddTHH:mm")')">
+                                ✏️
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm"
+                                    onclick="openDeleteScheduleModal('@schedule.Id','@filmName')">
+                                🗑
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Edit Schedule Modal -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Home" asp-action="EditSchedule" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Projection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="editScheduleId" />
+                    <input type="hidden" name="KinoId" value="@Model.Kino.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Film</label>
+                        <select class="form-select" name="FilmId" id="editScheduleFilmId">
+                            @foreach (var film in Model.Films)
+                            {
+                                <option value="@film.Id">@film.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Projection Date & Time</label>
+                        <input type="datetime-local" class="form-control" name="ProjectionDate" id="editScheduleDate" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Schedule Modal -->
+<div class="modal fade" id="deleteScheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form asp-controller="Home" asp-action="DeleteSchedule" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Projection</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="deleteScheduleId" />
+                    <input type="hidden" name="kinoId" value="@Model.Kino.Id" />
+                    <p>Delete projection for <strong id="deleteScheduleFilmName"></strong>? This cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     var FilmsRaw = @Html.Raw(JsonSerializer.Serialize(Model.Films));
 </script>
-<script src"~\wwwroot\js\site.js"></script>
+
+@section Scripts {
+    <script>
+        function openEditScheduleModal(id, filmId, projectionDate) {
+            document.getElementById('editScheduleId').value = id;
+            document.getElementById('editScheduleFilmId').value = filmId;
+            document.getElementById('editScheduleDate').value = projectionDate;
+            new bootstrap.Modal(document.getElementById('editScheduleModal')).show();
+        }
+        function openDeleteScheduleModal(id, filmName) {
+            document.getElementById('deleteScheduleId').value = id;
+            document.getElementById('deleteScheduleFilmName').textContent = filmName;
+            new bootstrap.Modal(document.getElementById('deleteScheduleModal')).show();
+        }
+    </script>
+}

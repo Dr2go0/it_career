@@ -15,7 +15,7 @@ namespace it_career.infrastructure.Extensions
             return new BookedFilm
             {
                 Id = dto.Id ?? Guid.NewGuid(),
-                AppUserId = dto.AppUserId,
+                UserId = dto.AppUserId,
                 FilmScheduleId = dto.FilmScheduleId
             };
         }
@@ -24,7 +24,7 @@ namespace it_career.infrastructure.Extensions
             return new BookedFilmDto
             {
                 Id = entity.Id,
-                AppUserId = entity.AppUserId,
+                AppUserId = entity.UserId,
                 FilmScheduleId = entity.FilmScheduleId
             };
         }

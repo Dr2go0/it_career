@@ -68,7 +68,7 @@ function CreatFilm() {
         btnClose.addEventListener("click", function (event) {
             form.remove();
         });
-
+        
         const btnCreate = document.createElement("button");
         btnCreate.className = "btn btn-primary m-2";
         btnCreate.type = "submit";
@@ -156,19 +156,22 @@ function AddProjection(kinoId) {
         });
 
         const inputDate = document.createElement("input");
-        inputDate.type = "date";
+        inputDate.type = "datetime-local";
         inputDate.name = "ProjectionDate";
         inputDate.placeholder = "Released:";
         inputDate.className = "form-control m-2";
         inputDate.autocomplete = "name webauthn";
 
+      
         document.getElementById("formContainer").appendChild(form);
 
         form.appendChild(btnClose);
         form.appendChild(inputSelectFilm);
         form.appendChild(inputDate);
+       
         form.appendChild(btnCreate);
         form.appendChild(inputKinoId);
+        
     }
 }
 function KinoSchedule(kinoId) {

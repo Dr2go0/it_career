@@ -14,6 +14,10 @@ namespace it_career.data.models
         public string Location { get; set; }
         [Required]
         public int Capacity { get; set; }
+        [Required]
+        [ForeignKey(nameof(Manager))]
+        public string ManagerId { get; set; } = null!;
+        public AppUser Manager { get; set; } = null!;
 
         public List<FilmSchedule> FilmSchedules { get; set; } = new();
 

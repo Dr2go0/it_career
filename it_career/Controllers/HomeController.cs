@@ -1,4 +1,4 @@
-using Humanizer;
+﻿using Humanizer;
 using it_career.data.models;
 using it_career.infrastructure.Extensions;
 using it_career.infrastructure.Interface;
@@ -37,27 +37,41 @@ namespace it_career.Controllers
         public IActionResult Index()
         {
             List<KinoDto> kinos = _kinoRepository.GetAll<Kino>().Select(x=>x.ToDto()).ToList();
-            return View(kinos);
+            var ViewModel = new HomeIndexViewModel
+            {
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                Kinos = kinos
+            };
+            return View( ViewModel);
         }
         public IActionResult KinoSchedule(Guid kinoId)
         {
-            List<FilmScheduleDto> Schedules = _filmScheduleRepository.Find<FilmSchedule>(x=>x.KinoId == kinoId).Select(x=>x.ToDto()).ToList();
+            List<FilmScheduleDto> Schedules = _filmScheduleRepository
+                .FindWithIncludes<FilmSchedule>(
+                    x => x.KinoId == kinoId,
+                    x => x.Film
+                )
+                .Select(x => x.ToDto())
+                .ToList();
 
-            List<FilmDto> allFilms= _filmRepository.GetAll<Film>().Select(x=>x.ToDto()).ToList();
+            List<FilmDto> allFilms = _filmRepository.GetAll<Film>().Select(x => x.ToDto()).ToList();
 
             var ViewModel = new KinoScheduleViewModel
             {
                 FilmSchedules = Schedules,
                 Films = allFilms,
-                Kino = _kinoRepository.GetById<Kino>(kinoId).ToDto()
+                Kino = _kinoRepository.GetById<Kino>(kinoId).ToDto(),
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                ManagerId = _kinoRepository.GetById<Kino>(kinoId).ManagerId
             };
             return View(ViewModel);
         }
-        public IActionResult Booked(Guid filmScheduleId=default)
-        {
 
+        public IActionResult Booked(Guid filmScheduleId = default)
+        {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = _userRepository.GetById<AppUser>(userIdString).ToDto();
+
             if (filmScheduleId != Guid.Empty)
             {
                 var filmSchedule = _filmScheduleRepository.GetById<FilmSchedule>(filmScheduleId).ToDto();
@@ -69,17 +83,25 @@ namespace it_career.Controllers
                 _bookedFilmRepository.Add(BookedFilm.ToEntity());
                 _bookedFilmRepository.Save();
             }
-            var UsersBookedFilms = _bookedFilmRepository.GetAll<BookedFilm>().Where(x => x.AppUserId == userIdString).Select(x=>x.ToDto()).ToList();
+
+            var UsersBookedFilms = _bookedFilmRepository
+                .FindWithIncludes<BookedFilm>(
+                    x => x.UserId == userIdString,
+                    x => x.FilmSchedule
+                )
+                .ToList();
+
             List<BookedFilmsViewModel> BookedFilmsViewModel = new List<BookedFilmsViewModel>();
             foreach (var item in UsersBookedFilms)
             {
-                BookedFilmsViewModel bookedFilm = new BookedFilmsViewModel();
-                var userFilmSchedule = _filmScheduleRepository.GetById<FilmSchedule>((Guid)item.FilmScheduleId);
-                bookedFilm.FilmName = _filmScheduleRepository.GetById<Film>(userFilmSchedule.FilmId).Name;
-                bookedFilm.ProjectionDate = userFilmSchedule.ProjectionDate;
+                BookedFilmsViewModel bookedFilm = new BookedFilmsViewModel
+                {
+                    FilmName = _filmRepository.GetById<Film>(item.FilmSchedule.FilmId).Name,
+                    ProjectionDate = item.FilmSchedule.ProjectionDate
+                };
                 BookedFilmsViewModel.Add(bookedFilm);
-
             }
+
             ViewBag.UserEmail = user.Email;
             return View(BookedFilmsViewModel);
         }
@@ -109,6 +131,7 @@ namespace it_career.Controllers
         [HttpPost]
         public IActionResult SaveKino(KinoDto kinoDto)
         {
+            kinoDto.ManagerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             _kinoRepository.Add(kinoDto.ToEntity());
             _kinoRepository.Save();
             return RedirectToAction("Index");
@@ -119,6 +142,68 @@ namespace it_career.Controllers
             _filmScheduleRepository.Add(filmScheduleDto.ToEntity());
             _filmScheduleRepository.Save();
             return RedirectToAction("KinoSchedule", new { kinoId = filmScheduleDto.KinoId });
+        }// ── KINO ──────────────────────────────────────────────
+        [HttpPost]
+        public IActionResult EditKino(KinoDto kinoDto)
+        {
+            var existing = _kinoRepository.GetById<Kino>(kinoDto.ToEntity().Id);
+            if (existing == null) return NotFound();
+
+            existing.Name = kinoDto.Name;
+            existing.Location = kinoDto.Location;
+            existing.Capacity = kinoDto.Capacity;
+
+            
+            _kinoRepository.Save();
+            return RedirectToAction("Index");
+        }
+
+        // HomeController - delete schedules before deleting the kino
+        [HttpPost]
+        public IActionResult DeleteKino(Guid id)
+        {
+            var schedules = _filmScheduleRepository
+                .Find<FilmSchedule>(x => x.KinoId == id)
+                .ToList();
+
+            foreach (var schedule in schedules)
+            {
+                _filmScheduleRepository.Delete(schedule); // cascade removes bookings
+            }
+            _filmScheduleRepository.Save();
+
+            var kino = _kinoRepository.GetById<Kino>(id);
+            if (kino == null) return NotFound();
+
+            _kinoRepository.Delete(kino);
+            _kinoRepository.Save();
+            return RedirectToAction("Index");
+        }
+
+        // ── SCHEDULE ──────────────────────────────────────────
+        [HttpPost]
+        public IActionResult EditSchedule(FilmScheduleDto filmScheduleDto)
+        {
+            var existing = _filmScheduleRepository.GetById<FilmSchedule>(filmScheduleDto.ToEntity().Id);
+            if (existing == null) return NotFound();
+
+            existing.FilmId = filmScheduleDto.FilmId;
+            existing.ProjectionDate = filmScheduleDto.ProjectionDate;
+
+            
+            _filmScheduleRepository.Save();
+            return RedirectToAction("KinoSchedule", new { kinoId = filmScheduleDto.KinoId });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteSchedule(Guid id, Guid kinoId)
+        {
+            var existing = _filmScheduleRepository.GetById<FilmSchedule>(id);
+            if (existing == null) return NotFound();
+
+            _filmScheduleRepository.Delete(existing);
+            _filmScheduleRepository.Save();
+            return RedirectToAction("KinoSchedule", new { kinoId });
         }
     }
 }

@@ -12,6 +12,6 @@ namespace it_career.models
         public string Name { get; set; }
         public string Location { get; set; }
         public int Capacity { get; set; }
-        
+        public string ManagerId { get; set; }
     }
 }

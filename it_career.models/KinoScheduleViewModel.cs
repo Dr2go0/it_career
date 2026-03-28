@@ -11,5 +11,7 @@ namespace it_career.models
         public List<FilmScheduleDto> FilmSchedules { get; set; }
         public List<FilmDto> Films { get; set; }
         public KinoDto Kino { get; set; }
+        public string? UserId { get; set; }
+        public string ManagerId { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using it_career.data;
 namespace it_career.data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260328083902_FixUserRelation")]
-    partial class FixUserRelation
+    [Migration("20260328115024_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -230,28 +230,22 @@ namespace it_career.data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AppUserId1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("FilmScheduleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FilmScheduleId1")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("AppUserId1");
-
                     b.HasIndex("FilmScheduleId");
 
-                    b.HasIndex("FilmScheduleId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("BookedFilms");
                 });
@@ -318,11 +312,17 @@ namespace it_career.data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.ToTable("Kino");
                 });
@@ -382,30 +382,22 @@ namespace it_career.data.Migrations
                 {
                     b.HasOne("it_career.data.models.AppUser", null)
                         .WithMany("BookedFilms")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
-                    b.HasOne("it_career.data.models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("it_career.data.models.FilmSchedule", null)
+                    b.HasOne("it_career.data.models.FilmSchedule", "FilmSchedule")
                         .WithMany()
                         .HasForeignKey("FilmScheduleId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("it_career.data.models.FilmSchedule", "FilmSchedule")
+                    b.HasOne("it_career.data.models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("FilmScheduleId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
-
                     b.Navigation("FilmSchedule");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("it_career.data.models.FilmSchedule", b =>
@@ -425,6 +417,17 @@ namespace it_career.data.Migrations
                     b.Navigation("Film");
 
                     b.Navigation("Kino");
+                });
+
+            modelBuilder.Entity("it_career.data.models.Kino", b =>
+                {
+                    b.HasOne("it_career.data.models.AppUser", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("it_career.data.models.AppUser", b =>

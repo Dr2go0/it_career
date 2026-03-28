@@ -16,27 +16,31 @@ namespace it_career.data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-           
+
             base.OnModelCreating(builder);
 
+            // BookedFilm → User: restrict (don't delete bookings when user deleted)
             builder.Entity<BookedFilm>()
-                .HasOne<AppUser>()
-                .WithMany(u => u.BookedFilms)
-                .HasForeignKey(bf => bf.AppUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-            builder.Entity<BookedFilm>()
-               .HasOne<FilmSchedule>()
-               .WithMany()
-                .HasForeignKey(bf => bf.FilmScheduleId)
+                .HasOne(bf => bf.User)
+                .WithMany()
+                .HasForeignKey(bf => bf.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // BookedFilm → FilmSchedule: cascade (bookings removed when schedule deleted)
+            builder.Entity<BookedFilm>()
+                .HasOne(bf => bf.FilmSchedule)
+                .WithMany()
+                .HasForeignKey(bf => bf.FilmScheduleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // FilmSchedule → Film: restrict (handle manually in controller)
             builder.Entity<FilmSchedule>()
                 .HasOne(fs => fs.Film)
                 .WithMany(f => f.Schedules)
                 .HasForeignKey(fs => fs.FilmId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-           
+            // FilmSchedule → Kino: restrict (handle manually in controller)
             builder.Entity<FilmSchedule>()
                 .HasOne(fs => fs.Kino)
                 .WithMany(k => k.FilmSchedules)

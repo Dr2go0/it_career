@@ -1,18 +1,129 @@
-﻿@model List<it_career.models.KinoDto>;
+﻿@model it_career.models.HomeIndexViewModel
 
-<div class="text-center">
-    @if(User.IsInRole("Manager")){<button class="btn btn-primary" id="AddKino" onclick="CreatKino()">Add Kino +</button>}
-    <div id="formContainer"></div>
-    <div class="container d-flex justify-content-start" id="kinosContainer">
-        @foreach (var kino in Model)
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="mb-0">Cinemas</h2>
+        <p class="text-muted mb-0">Browse available cinemas and their schedules</p>
+    </div>
+    @if (User.IsInRole("Manager"))
+    {
+        <button class="btn btn-primary" onclick="CreatKino()">+ Add Cinema</button>
+    }
+</div>
+
+<div id="formContainer" class="mb-4"></div>
+
+@if (!Model.Kinos.Any())
+{
+    <div class="text-center text-muted py-5">
+        <p class="fs-5">No cinemas available yet.</p>
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="kinosContainer">
+        @foreach (var kino in Model.Kinos)
         {
-            <div class="container d-flex flex-column gap-3 w-25 border rounded p-3">
-                <h3 class="align-self-center">@kino.Name</h3>
-                <p>Location: @kino.Location</p>
-                <p>Capacity: @kino.Capacity</p>
-                <button class="btn btn-secondary" onclick="KinoSchedule('@kino.Id')">Schedule</button>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@kino.Name</h5>
+                        <ul class="list-unstyled text-muted mb-0">
+                            <li>📍 @kino.Location</li>
+                            <li>🪑 Capacity: @kino.Capacity</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-sm flex-grow-1"
+                                onclick="KinoSchedule('@kino.Id')">
+                            View Schedule
+                        </button>
+                        @if (User.IsInRole("Manager") && Model.UserId == kino.ManagerId)
+                        {
+                            <button class="btn btn-outline-secondary btn-sm"
+                                    onclick="openEditKinoModal('@kino.Id','@kino.Name','@kino.Location','@kino.Capacity')">
+                                ✏️
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm"
+                                    onclick="openDeleteKinoModal('@kino.Id','@kino.Name')">
+                                🗑
+                            </button>
+                        }
+                    </div>
+                </div>
             </div>
         }
     </div>
+}
+
+<!-- Edit Kino Modal -->
+<div class="modal fade" id="editKinoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Home" asp-action="EditKino" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Cinema</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="editKinoId" />
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="Name" id="editKinoName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" name="Location" id="editKinoLocation" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Capacity</label>
+                        <input type="number" class="form-control" name="Capacity" id="editKinoCapacity" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<script src"~\wwwroot\js\site.js"></script>
+
+<!-- Delete Kino Modal -->
+<div class="modal fade" id="deleteKinoModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form asp-controller="Home" asp-action="DeleteKino" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Cinema</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="deleteKinoId" />
+                    <p>Delete <strong id="deleteKinoName"></strong>? This cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openEditKinoModal(id, name, location, capacity) {
+            document.getElementById('editKinoId').value = id;
+            document.getElementById('editKinoName').value = name;
+            document.getElementById('editKinoLocation').value = location;
+            document.getElementById('editKinoCapacity').value = capacity;
+            new bootstrap.Modal(document.getElementById('editKinoModal')).show();
+        }
+        function openDeleteKinoModal(id, name) {
+            document.getElementById('deleteKinoId').value = id;
+            document.getElementById('deleteKinoName').textContent = name;
+            new bootstrap.Modal(document.getElementById('deleteKinoModal')).show();
+        }
+    </script>
+}

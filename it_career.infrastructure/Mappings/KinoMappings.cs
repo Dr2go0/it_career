@@ -17,7 +17,8 @@ namespace it_career.infrastructure.Mappings
                 Id = kino.Id,
                 Name = kino.Name,
                 Location = kino.Location,
-                Capacity = kino.Capacity
+                Capacity = kino.Capacity,
+                ManagerId = kino.ManagerId
             };
         }
 
@@ -28,7 +29,8 @@ namespace it_career.infrastructure.Mappings
                 Id = dto.Id ?? Guid.NewGuid(),
                 Name = dto.Name,
                 Location = dto.Location,
-                Capacity = dto.Capacity
+                Capacity = dto.Capacity,
+                ManagerId = dto.ManagerId
             };
         }
     }

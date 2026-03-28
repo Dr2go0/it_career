@@ -17,14 +17,17 @@ namespace it_career.infrastructure.Interface
         T GetById<T>(string id) where T : class;
 
         void RemoveById<T>(Guid id) where T : class;
+        void Update<T>(T entity) where T : class;
+        void Delete<T>(T entity) where T : class;
 
-        
 
         IEnumerable<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class;
 
         bool Any<T>(Expression<Func<T, bool>> predicate) where T : class;
+        IQueryable<T> GetAllWithIncludes<T>(params Expression<Func<T, object>>[] includes) where T : class;
+        IQueryable<T> FindWithIncludes<T>(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes) where T : class;
 
-        void Save();
+       void Save();
 
     }
 }

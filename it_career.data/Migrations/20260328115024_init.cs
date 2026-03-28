@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace it_career.data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,20 +63,6 @@ namespace it_career.data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Film", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Kino",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Kino", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,6 +172,27 @@ namespace it_career.data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Kino",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    ManagerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Kino", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Kino_AspNetUsers_ManagerId",
+                        column: x => x.ManagerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FilmSchedule",
                 columns: table => new
                 {
@@ -216,10 +223,9 @@ namespace it_career.data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AppUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FilmScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FilmScheduleId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FilmScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -228,26 +234,19 @@ namespace it_career.data.Migrations
                         name: "FK_BookedFilms_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_BookedFilms_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_BookedFilms_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_BookedFilms_FilmSchedule_FilmScheduleId",
                         column: x => x.FilmScheduleId,
                         principalTable: "FilmSchedule",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BookedFilms_FilmSchedule_FilmScheduleId1",
-                        column: x => x.FilmScheduleId1,
-                        principalTable: "FilmSchedule",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -295,19 +294,14 @@ namespace it_career.data.Migrations
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookedFilms_AppUserId1",
-                table: "BookedFilms",
-                column: "AppUserId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BookedFilms_FilmScheduleId",
                 table: "BookedFilms",
                 column: "FilmScheduleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookedFilms_FilmScheduleId1",
+                name: "IX_BookedFilms_UserId",
                 table: "BookedFilms",
-                column: "FilmScheduleId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FilmSchedule_FilmId",
@@ -318,6 +312,11 @@ namespace it_career.data.Migrations
                 name: "IX_FilmSchedule_KinoId",
                 table: "FilmSchedule",
                 column: "KinoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Kino_ManagerId",
+                table: "Kino",
+                column: "ManagerId");
         }
 
         /// <inheritdoc />
@@ -345,9 +344,6 @@ namespace it_career.data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "FilmSchedule");
 
             migrationBuilder.DropTable(
@@ -355,6 +351,9 @@ namespace it_career.data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Kino");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

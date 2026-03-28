@@ -12,7 +12,13 @@ namespace it_career.data.models
     {
         [Key]
         public Guid Id { get; set; }
-        public string AppUserId { get; set; }
+
+        public string UserId { get; set; } = null!;
+        [ForeignKey(nameof(UserId))]
+        public AppUser User { get; set; } = null!;
+
         public Guid? FilmScheduleId { get; set; }
+        [ForeignKey(nameof(FilmScheduleId))]
+        public FilmSchedule FilmSchedule { get; set; } = null!;
     }
 }
